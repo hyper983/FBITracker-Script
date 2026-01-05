@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBI Tracking System</title>
+    <!-- لینک فونت وزیر برای زیبایی متن فارسی -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        :root {
+            --primary-color: #00f2ff;
+            --bg-glass: rgba(15, 23, 42, 0.95);
+            --item-bg: rgba(255, 255, 255, 0.05);
+            --hover-bg: rgba(0, 242, 255, 0.15);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            overflow: hidden;
+            display: none; /* پیش‌فرض مخفی */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: transparent;
+        }
+
+        /* افکت پس‌زمینه کلی */
+        .container {
+            width: 800px;
+            height: 600px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* سایه‌ها حذف شد */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease-out;
+            position: relative;
+        }
+
+        /* هدر */
+        .header {
+            padding: 20px 30px;
+            background: linear-gradient(90deg, rgba(0,242,255,0.1) 0%, rgba(0,0,0,0) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 24px;
+            /* سایه متن حذف شد */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            background: var(--primary-color);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+            opacity: 0.7;
+        }
+
+        .close-btn:hover {
+            color: #ff4444;
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* لیست پلیرها */
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* اسکرول بار سفارشی */
+        .content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .content::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        .content::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .player-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .player-card {
+            background: var(--item-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .player-card:hover {
+            background: var(--hover-bg);
+            transform: translateY(-2px);
+            /* سایه کارت حذف شد */
+        }
+
+        .player-card:hover::before {
+            opacity: 1;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .player-name {
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .player-id {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+
+        .track-btn {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: 0.3s;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .track-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+            /* سایه دکمه حذف شد */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* استایل اسکنر رادار تزئینی */
+        .radar-deco {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(0, 242, 255, 0.3);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,242,255,0.1) 0%, rgba(0,0,0,0) 70%);
+        }
+        .radar-line {
+            width: 50%;
+            height: 2px;
+            background: var(--primary-color);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0 0;
+            animation: radarSpin 2s infinite linear;
+            /* سایه خط رادار حذف شد */
+        }
+
+        @keyframes radarSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- هدر -->
+        <div class="header">
+            <h1>
+                <span class="badge">FBI</span>
+                سیستم ردیابی مرکزی
+            </h1>
+            <button class="close-btn" onclick="closeUI()">×</button>
+        </div>
+
+        <!-- محتوا -->
+        <div class="content">
+            <div id="playerList" class="player-list">
+                <!-- کارت‌ها توسط جاوا اسکریپت اضافه می‌شوند -->
+            </div>
+        </div>
+
+        <!-- رادار تزئینی -->
+        <div class="radar-deco">
+            <div class="radar-line"></div>
+        </div>
+    </div>
+
+    <script>
+        // شنونده رویداد برای دریافت پیام از Lua
+        window.addEventListener('message', function(event) {
+            const item = event.data;
+
+            if (item.action === 'open') {
+                document.body.style.display = 'flex';
+                loadPlayers(item.players);
+            }
+        });
+
+        // تابع بستن UI
+        function closeUI() {
+            document.body.style.display = 'none';
+            // ارسال درخواست بستن به Lua
+            fetch(`https://${GetParentResourceName()}/close`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({})
+            });
+        }
+
+        // بستن با کلید ESC
+        document.onkeyup = function(data) {
+            if (data.which == 27) {
+                closeUI();
+            }
+        };
+
+        // بارگذاری لیست پلیرها
+        function loadPlayers(players) {
+            const list = document.getElementById('playerList');
+            list.innerHTML = ''; // پاک کردن لیست قبلی
+
+            players.forEach(player => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+
+                card.innerHTML = `
+                    <div class="info-row">
+                        <span class="player-name">${player.name}</span>
+                        <span class="player-id">ID: ${player.id}</span>
+                    </div>
+                    <div class="info-row" style="font-size: 11px; opacity: 0.6;">
+                         مختصات: ${Math.floor(player.coords.x)}, ${Math.floor(player.coords.y)}
+                    </div>
+                    <button class="track-btn" onclick="trackPlayer('${player.name}', ${player.coords.x}, ${player.coords.y})">
+                        ردیابی موقعیت GPS
+                    </button>
+                `;
+
+                list.appendChild(card);
+            });
+        }
+
+        // تابع ردیابی
+        function trackPlayer(name, x, y) {
+            fetch(`https://${GetParentResourceName()}/track`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    x: x,
+                    y: y
+                })
+            });
+            // بستن خودکار بعد از انتخاب
+            closeUI();
+        }
+    </script>
+</body>
+</html>
